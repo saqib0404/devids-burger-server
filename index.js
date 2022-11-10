@@ -64,7 +64,7 @@ async function run() {
             const authHeader = req.headers.authorization;
             // console.log(authHeader);
             if (!authHeader) {
-                return res.status(402).send({ message: 'unauthorized access' });
+                return res.status(401).send({ message: 'unauthorized access' });
             }
             const token = authHeader.split(' ')[1];
             jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
