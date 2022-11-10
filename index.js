@@ -42,7 +42,26 @@ async function run() {
             res.send(service);
         })
 
-       
+        // Getting service wise review
+        app.get('/reviews', async (req, res) => {
+            let query = {};
+            console.log(req.query);
+
+            if (req.query?.email) {
+                query = {
+                    email: req.query?.email
+                }
+            }
+
+            if (req.query?.id) {
+                query = {
+                    serviceId: req.query?.id
+                }
+            }
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
+        })
 
         // Post a review
         app.post('/reviews', async (req, res) => {
