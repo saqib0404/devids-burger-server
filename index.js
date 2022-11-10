@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { response } = require('express');
 require('dotenv').config();
 
 const app = express();
@@ -16,9 +17,10 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const serviceCollection = client.db('davidsBurger').collection('services');
+        const reviewCollection = client.db('davidsBurger').collection('reviews');
 
+        // Getting all services
         app.get('/services', async (req, res) => {
-            console.log(req.query);
             let query = {};
             if (req.query.sort == 3) {
                 const cursor = serviceCollection.find(query);
@@ -31,6 +33,24 @@ async function run() {
                 res.send(services);
             }
         })
+
+        // Getting a specific service
+        app.get('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const service = await serviceCollection.findOne(query);
+            res.send(service);
+        })
+
+       
+
+        // Post a review
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        })
+
 
     }
     finally { }
