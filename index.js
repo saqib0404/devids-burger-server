@@ -45,7 +45,6 @@ async function run() {
         // Add Service
         app.post('/services', async (req, res) => {
             const service = req.body;
-            console.log(service);
             const result = await serviceCollection.insertOne(service);
             res.send(result);
         })
@@ -77,6 +76,15 @@ async function run() {
             res.send(result);
         })
 
+        // Delete a review
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { serviceId: (id) };
+            console.log(query);
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result);
+        })
 
     }
     finally { }
