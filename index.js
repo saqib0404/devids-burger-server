@@ -42,10 +42,17 @@ async function run() {
             res.send(service);
         })
 
+        // Add Service
+        app.post('/services', async (req, res) => {
+            const service = req.body;
+            console.log(service);
+            const result = await serviceCollection.insertOne(service);
+            res.send(result);
+        })
+
         // Getting service wise review
         app.get('/reviews', async (req, res) => {
             let query = {};
-            console.log(req.query);
 
             if (req.query?.email) {
                 query = {
