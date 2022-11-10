@@ -12,15 +12,30 @@ app.use(express.json());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.csyc5ob.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-// function run() {
-//     try {
+async function run() {
+    try {
+        const serviceCollection = client.db('davidsBurger').collection('services');
 
-//     }
-//     finally { }
-// }
-// run().catch(e => console.log(e))
+        app.get('/services', async (req, res) => {
+            console.log(req.query);
+            let query = {};
+            if (req.query.sort == 3) {
+                const cursor = serviceCollection.find(query);
+                const services = await cursor.limit(3).toArray();
+                return res.send(services);
+            }
+            else {
+                const cursor = serviceCollection.find(query);
+                const services = await cursor.toArray();
+                res.send(services);
+            }
+        })
+
+    }
+    finally { }
+}
+run().catch(e => console.log(e))
 
 
 app.get('/', (req, res) => {
